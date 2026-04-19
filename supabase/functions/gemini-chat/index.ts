@@ -1,4 +1,7 @@
-import { corsHeaders } from "@supabase/supabase-js/cors";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 const SYSTEM_PROMPT = `You are AU Career Compass, an AI career guidance assistant for Andhra University students. You have access to alumni placement data from 3000 AU alumni.
 
