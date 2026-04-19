@@ -65,7 +65,7 @@ const Dashboard = () => {
   }, []);
 
   const opts = useMemo(() => {
-    const uniq = (arr: (string | number)[]) => Array.from(new Set(arr));
+    const uniq = (arr: string[]) => Array.from(new Set(arr));
     return {
       years: ["All", ...uniq(data.map((d) => String(d.Year))).sort()],
       companies: ["All", ...uniq(data.map((d) => d.Company)).sort()],
