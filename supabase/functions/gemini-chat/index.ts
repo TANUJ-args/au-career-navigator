@@ -25,9 +25,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const apiKey = Deno.env.get("GEMINI_API_KEY");
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "GEMINI_API_KEY not set" }), {
+      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not set" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -41,26 +41,30 @@ Deno.serve(async (req) => {
       });
     }
 
-    const contents = messages.map((m) => ({
-      role: m.role === "user" ? "user" : "model",
-      parts: [{ text: m.text }],
-    }));
+    const chatMessages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...messages.map((m) => ({
+        role: m.role === "model" ? "assistant" : "user",
+        content: m.text,
+      })),
+    ];
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    const resp = await fetch(url, {
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
       body: JSON.stringify({
-        systemInstruction: { role: "system", parts: [{ text: SYSTEM_PROMPT }] },
-        contents,
-        generationConfig: { temperature: 0.7, maxOutputTokens: 800 },
+        model: "google/gemini-2.5-flash",
+        messages: chatMessages,
       }),
     });
 
     if (!resp.ok) {
       const t = await resp.text();
-      console.error("Gemini error:", resp.status, t);
-      return new Response(JSON.stringify({ error: `Gemini API error (${resp.status})` }), {
+      console.error("AI gateway error:", resp.status, t);
+      return new Response(JSON.stringify({ error: `AI error (${resp.status})` }), {
         status: 502,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -68,8 +72,7 @@ Deno.serve(async (req) => {
 
     const data = await resp.json();
     const reply: string =
-      data?.candidates?.[0]?.content?.parts?.map((p: any) => p.text).join("\n") ??
-      "Sorry, I couldn't generate a response.";
+      data?.choices?.[0]?.message?.content ?? "Sorry, I couldn't generate a response.";
 
     return new Response(JSON.stringify({ reply }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
