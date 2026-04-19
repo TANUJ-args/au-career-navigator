@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bot, Send, User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 
 type Msg = { role: "user" | "model"; text: string };
