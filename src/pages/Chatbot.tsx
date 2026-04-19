@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bot, Send, User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 
 type Msg = { role: "user" | "model"; text: string };
@@ -180,13 +182,17 @@ const Chatbot = () => {
                   </div>
                 )}
                 <div
-                  className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm whitespace-pre-wrap ${
+                  className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm ${
                     m.role === "user"
-                      ? "bg-mint text-navy rounded-br-sm"
-                      : "bg-white/10 text-white rounded-bl-sm"
+                      ? "bg-mint text-navy rounded-br-sm whitespace-pre-wrap"
+                      : "bg-white/10 text-white rounded-bl-sm prose prose-sm prose-invert max-w-none prose-headings:text-mint prose-headings:font-bold prose-strong:text-white prose-strong:font-semibold prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-h1:text-base prose-h2:text-base prose-h3:text-sm"
                   }`}
                 >
-                  {m.text}
+                  {m.role === "model" ? (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.text}</ReactMarkdown>
+                  ) : (
+                    m.text
+                  )}
                 </div>
                 {m.role === "user" && (
                   <div className="w-7 h-7 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0">
