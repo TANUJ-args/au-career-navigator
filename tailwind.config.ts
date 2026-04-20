@@ -14,9 +14,15 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Source Sans 3', 'system-ui', 'sans-serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
       },
       colors: {
+        maroon: "hsl(var(--maroon))",
+        "maroon-light": "hsl(var(--maroon-light))",
+        ivory: "hsl(var(--ivory))",
+        charcoal: "hsl(var(--charcoal))",
+        "charcoal-soft": "hsl(var(--charcoal-soft))",
         navy: "hsl(var(--navy))",
         "navy-soft": "hsl(var(--navy-soft))",
         teal: "hsl(var(--teal))",
