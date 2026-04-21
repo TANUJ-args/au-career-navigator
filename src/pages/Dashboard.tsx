@@ -951,12 +951,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
         >
           Top Placement Paths
         </a>
-        <a
-          href="#alumni-form"
-          className="rounded-full bg-[#1f0f0f] border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:border-gold"
-        >
-          Alumni Form
-        </a>
+
       </div>
 
       <section className="grid gap-6 xl:grid-cols-12 items-start">
