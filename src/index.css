@@ -8,102 +8,102 @@
 
 @layer base {
   :root {
-    /* Heritage palette */
-    --maroon: 355 82% 24%;       /* #7A0016 */
-    --maroon-light: 355 70% 34%;
-    --gold: 44 63% 52%;          /* #D4AF37 */
-    --gold-soft: 43 72% 62%;
-    --mint: 165 97% 39%;         /* supporting accent */
-    --ivory: 42 33% 96%;         /* warm light mode base */
-    --charcoal: 338 27% 8%;      /* #1a0f14 */
-    --charcoal-soft: 338 20% 12%;
+    /* Unified AU@100 warm dark palette */
+    --maroon: 0 69% 32%;         /* #8B1A1A */
+    --maroon-light: 0 53% 25%;
+    --gold: 46 68% 47%;          /* #C9A227 */
+    --gold-soft: 46 62% 57%;
+    --mint: 175 84% 32%;         /* #0d9488 (CTA accent only) */
+    --ivory: 0 0% 100%;          /* #FFFFFF */
+    --charcoal: 0 0% 5%;         /* #0d0d0d */
+    --charcoal-soft: 0 35% 9%;   /* #1f0f0f */
 
     /* Backward-compatible aliases */
     --navy: var(--maroon);
     --navy-soft: var(--maroon-light);
-    --teal: 192 89% 35%;
+    --teal: 175 84% 32%;
     --surface: var(--ivory);
 
     /* Semantic tokens */
-    --background: var(--ivory);
-    --foreground: var(--maroon);
+    --background: 0 44% 7%;      /* #1a0a0a */
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: var(--maroon);
+    --card: 0 35% 9%;            /* #1f0f0f */
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: var(--maroon);
-
-    --primary: var(--gold);
-    --primary-foreground: var(--maroon);
-
-    --secondary: var(--maroon);
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 42 22% 90%;
-    --muted-foreground: 350 18% 34%;
-
-    --accent: var(--gold-soft);
-    --accent-foreground: var(--maroon);
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 36 18% 82%;
-    --input: 36 18% 82%;
-    --ring: var(--gold);
-
-    --radius: 1rem;
-
-    --shadow-card: 0 16px 30px -16px hsl(355 82% 24% / 0.28);
-    --shadow-glow: 0 0 15px hsl(44 63% 52% / 0.4);
-    --gradient-hero: radial-gradient(120% 120% at 50% 0%, hsl(355 70% 36%) 0%, hsl(355 82% 24%) 52%, hsl(338 27% 8%) 100%);
-    --gradient-page: radial-gradient(45rem 30rem at 20% -10%, hsl(44 63% 52% / 0.12), transparent 72%), radial-gradient(40rem 30rem at 90% 0%, hsl(355 70% 34% / 0.16), transparent 70%);
-    --gradient-page-dark: radial-gradient(45rem 30rem at 20% -10%, hsl(44 63% 52% / 0.2), transparent 72%), radial-gradient(40rem 30rem at 90% 0%, hsl(355 70% 34% / 0.22), transparent 70%);
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: var(--maroon);
-    --sidebar-primary: var(--maroon);
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: var(--gold-soft);
-    --sidebar-accent-foreground: var(--maroon);
-    --sidebar-border: 36 18% 82%;
-    --sidebar-ring: var(--gold);
-  }
-
-  .dark {
-    --background: var(--charcoal);
-    --foreground: 36 33% 96%;
-
-    --card: var(--charcoal-soft);
-    --card-foreground: 36 33% 96%;
-
-    --popover: 338 22% 13%;
-    --popover-foreground: 36 33% 96%;
+    --popover: 0 35% 9%;
+    --popover-foreground: 0 0% 100%;
 
     --primary: var(--gold);
     --primary-foreground: var(--charcoal);
 
-    --secondary: 355 66% 32%;
+    --secondary: var(--charcoal);
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 338 20% 16%;
-    --muted-foreground: 36 14% 72%;
+    --muted: 0 24% 13%;          /* #2a1a1a */
+    --muted-foreground: 28 18% 66%; /* #B8A89A */
 
-    --accent: var(--gold-soft);
-    --accent-foreground: var(--charcoal);
+    --accent: 43 75% 31%;        /* #8B6914 */
+    --accent-foreground: 0 0% 100%;
 
-    --border: 338 20% 20%;
-    --input: 338 20% 20%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 38% 16%;        /* #3a2a1a */
+    --input: 30 38% 16%;
     --ring: var(--gold);
 
-    --sidebar-background: 338 24% 11%;
-    --sidebar-foreground: 36 33% 96%;
+    --radius: 1rem;
+
+    --shadow-card: 0 16px 30px -16px hsl(0 0% 0% / 0.45);
+    --shadow-glow: 0 0 16px hsl(46 68% 47% / 0.38);
+    --gradient-hero: radial-gradient(120% 120% at 50% 0%, hsl(0 69% 32%) 0%, hsl(0 44% 7%) 52%, hsl(0 0% 5%) 100%);
+    --gradient-page: radial-gradient(45rem 30rem at 20% -10%, hsl(46 68% 47% / 0.1), transparent 72%), radial-gradient(40rem 30rem at 90% 0%, hsl(0 69% 32% / 0.18), transparent 70%);
+    --gradient-page-dark: radial-gradient(45rem 30rem at 20% -10%, hsl(46 68% 47% / 0.1), transparent 72%), radial-gradient(40rem 30rem at 90% 0%, hsl(0 69% 32% / 0.18), transparent 70%);
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: var(--gold);
     --sidebar-primary-foreground: var(--charcoal);
-    --sidebar-accent: 338 20% 18%;
-    --sidebar-accent-foreground: 36 33% 96%;
-    --sidebar-border: 338 20% 20%;
+    --sidebar-accent: 0 24% 13%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 30 38% 16%;
+    --sidebar-ring: var(--gold);
+  }
+
+  .dark {
+    --background: 0 44% 7%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 35% 9%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 35% 9%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: var(--gold);
+    --primary-foreground: var(--charcoal);
+
+    --secondary: var(--charcoal);
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 24% 13%;
+    --muted-foreground: 28 18% 66%;
+
+    --accent: 43 75% 31%;
+    --accent-foreground: 0 0% 100%;
+
+    --border: 30 38% 16%;
+    --input: 30 38% 16%;
+    --ring: var(--gold);
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: var(--gold);
+    --sidebar-primary-foreground: var(--charcoal);
+    --sidebar-accent: 0 24% 13%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 30 38% 16%;
     --sidebar-ring: var(--gold);
   }
 }
@@ -152,11 +152,15 @@
   .shadow-glow { box-shadow: var(--shadow-glow); }
 
   .glass {
-    @apply backdrop-blur-md border border-white/15 bg-white/40 dark:bg-white/5;
+    @apply backdrop-blur-md border;
+    border-color: hsl(var(--border));
+    background-color: hsl(var(--card));
   }
 
   .glass-dark {
-    @apply backdrop-blur-md border border-white/10 bg-black/20;
+    @apply backdrop-blur-md border;
+    border-color: hsl(var(--border));
+    background-color: hsl(var(--card));
   }
 
   .hover-gold-glow {

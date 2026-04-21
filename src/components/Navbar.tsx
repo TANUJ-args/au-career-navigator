@@ -5,9 +5,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 const links = [
   { to: "/", label: "Home", end: true },
+  { to: "/ecosystem", label: "Ecosystem" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/chatbot", label: "Chatbot" },
-  { to: "/ecosystem", label: "Ecosystem" },
+  { to: "/alumni", label: "Alumni" },
 ];
 
 type Theme = "light" | "dark";
@@ -41,7 +42,7 @@ const Navbar = () => {
   }, [theme]);
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 border-b border-gold/25 bg-maroon/85 dark:bg-charcoal/85 backdrop-blur-md">
+    <header className="fixed top-0 inset-x-0 z-50 border-b border-[#3a2a1a] bg-[#0d0d0d]/95 backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 md:px-6 lg:h-20">
         <Link to="/" className="min-w-0 flex items-center gap-2 text-gold transition-colors hover:text-gold-soft">
           <Compass className="h-5 w-5 shrink-0" />
@@ -61,8 +62,8 @@ const Navbar = () => {
                   className={({ isActive }) =>
                     `px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
                       isActive
-                        ? "bg-gold/20 text-gold border border-gold/35"
-                        : "text-ivory/80 hover:text-ivory hover:bg-white/5"
+                        ? "bg-gold text-[#0d0d0d] border border-gold"
+                        : "text-white hover:text-white hover:bg-[#1f0f0f]"
                     }`
                   }
                 >
@@ -77,7 +78,7 @@ const Navbar = () => {
               <button
                 type="button"
                 aria-label="Open navigation menu"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 bg-gold/10 text-gold transition-colors hover:bg-gold/20 lg:hidden"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#8B6914] bg-[#1f0f0f] text-gold transition-colors hover:bg-[#2a1a1a] lg:hidden"
               >
                 <Menu className="h-4 w-4" />
               </button>
@@ -85,7 +86,7 @@ const Navbar = () => {
 
             <DropdownMenuContent
               align="end"
-              className="w-52 border-gold/35 bg-maroon/95 p-1 text-ivory backdrop-blur-md lg:hidden"
+              className="w-52 border-[#3a2a1a] bg-[#0d0d0d]/95 p-1 text-white backdrop-blur-md lg:hidden"
             >
               {links.map((l) => {
                 const active = isLinkActive(l.to, l.end);
@@ -96,8 +97,8 @@ const Navbar = () => {
                       to={l.to}
                       className={`w-full rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                         active
-                          ? "bg-gold/20 text-gold"
-                          : "text-ivory/85 hover:bg-white/10 hover:text-ivory"
+                          ? "bg-gold text-[#0d0d0d]"
+                          : "text-white hover:bg-[#1f0f0f] hover:text-white"
                       }`}
                     >
                       {l.label}
@@ -112,7 +113,7 @@ const Navbar = () => {
             type="button"
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="h-10 w-10 shrink-0 rounded-full border border-gold/40 bg-gold/15 text-gold hover:bg-gold/25 hover-gold-glow"
+            className="h-10 w-10 shrink-0 rounded-full border border-[#8B6914] bg-[#1f0f0f] text-gold hover:bg-[#2a1a1a] hover-gold-glow"
           >
             {theme === "dark" ? <SunMedium className="w-4 h-4 mx-auto" /> : <MoonStar className="w-4 h-4 mx-auto" />}
           </button>

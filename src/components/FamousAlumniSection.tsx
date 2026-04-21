@@ -17,7 +17,7 @@ const FamousAlumniSection = () => {
     <section className="max-w-7xl mx-auto px-6 py-20">
       <div className="text-center mb-12">
         <p className="text-gold font-semibold uppercase tracking-[0.2em] text-xs md:text-sm">AU Legacy</p>
-        <h2 className="text-3xl md:text-5xl text-maroon dark:text-ivory mt-3">
+        <h2 className="text-2xl font-semibold text-gold mt-3">
           Famous Alumni of Andhra University
         </h2>
         <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
@@ -32,7 +32,7 @@ const FamousAlumniSection = () => {
             className="group glass rounded-2xl shadow-card hover-gold-glow overflow-hidden"
             style={{ animationDelay: `${index * 70}ms` }}
           >
-            <div className="h-56 bg-maroon/10 dark:bg-maroon/20">
+            <div className="h-56 bg-[#1a0a0a]">
               {imageError[alumnus.id] ? (
                 <div className="h-full w-full bg-hero flex items-center justify-center">
                   <span className="text-gold text-4xl font-serif">{getInitials(alumnus.name)}</span>
@@ -48,7 +48,7 @@ const FamousAlumniSection = () => {
               )}
             </div>
             <div className="p-6">
-              <h3 className="text-2xl text-maroon dark:text-ivory">{alumnus.name}</h3>
+              <h3 className="text-2xl text-gold">{alumnus.name}</h3>
               <p className="text-gold text-sm font-semibold mt-1">{alumnus.title}</p>
               <p className="text-sm text-muted-foreground mt-4 leading-relaxed">{alumnus.description}</p>
             </div>

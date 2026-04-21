@@ -47,13 +47,26 @@ type TwinCandidate = {
   };
 };
 
-const MAROON = "#6A1E39";
-const MAROON_LIGHT = "#8E3A59";
-const MINT = "#02C39A";
-const GOLD = "#D4AF37";
+type PlacementPathCard = {
+  role: string;
+  company: string;
+  route: "On-campus" | "Off-campus";
+  skills: string[];
+};
+
+const MAROON = "#8B1A1A";
+const MAROON_LIGHT = "#8B6914";
+const MINT = "#0d9488";
+const GOLD = "#C9A227";
 
 const LOCAL_ALUMNI_STORAGE_KEY = "au-alumni-mvp-submissions";
 const ROLE_TRACKS: RoleTrack[] = ["All", "SDE", "Data", "Core"];
+const DASHBOARD_SUMMARY_FALLBACK = {
+  avgSal: "14.5",
+  total: 3001,
+  topCompany: "Capgemini",
+  topRole: "Data Analyst",
+};
 
 const ROADMAP_LINKS: Record<Exclude<RoleTrack, "All">, Array<{ title: string; href: string; note: string }>> = {
   SDE: [
@@ -130,7 +143,6 @@ const parseSkills = (value: string) =>
     .map((skill) => skill.toLowerCase());
 
 const salaryToLpa = (salary: number) => (salary > 1000 ? salary / 100000 : salary);
-const formatSalary = (salary: number) => `Rs ${salaryToLpa(salary).toFixed(1)} LPA`;
 
 const formatSkill = (skill: string) =>
   skill
@@ -155,15 +167,15 @@ const getTopValues = (values: string[], limit: number) => {
 };
 
 const chartTheme = (isDark: boolean) => ({
-  grid: isDark ? "#4A3440" : "#E3D6C5",
-  axis: isDark ? "#E9DCC9" : "#4B2A36",
-  tooltipBg: isDark ? "rgba(30, 18, 24, 0.95)" : "rgba(255, 248, 238, 0.95)",
-  tooltipText: isDark ? "#F6EBDD" : "#3A1D2A",
+  grid: "#3a2a1a",
+  axis: "#B8A89A",
+  tooltipBg: "rgba(31, 15, 15, 0.95)",
+  tooltipText: "#FFFFFF",
 });
 
 const ChartCard = ({ title, children }: { title: string; children: ReactNode }) => (
-  <div className="glass rounded-2xl p-5 shadow-card border border-gold/20">
-    <h3 className="text-base md:text-lg font-semibold text-maroon dark:text-gold mb-3">{title}</h3>
+  <div className="glass rounded-2xl p-5 shadow-card border border-[#3a2a1a]">
+    <h3 className="text-base md:text-lg font-semibold text-gold mb-3">{title}</h3>
     <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
         {children}
@@ -188,7 +200,7 @@ const Select = ({
     <select
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className="rounded-xl border border-gold/25 bg-card/80 px-3 py-2 text-sm text-maroon dark:text-ivory"
+      className="rounded-xl border border-[#3a2a1a] bg-[#2a1a1a] px-3 py-2 text-sm text-white"
     >
       {options.map((option) => (
         <option key={option} value={option}>
@@ -213,12 +225,77 @@ const TrackPill = ({
     onClick={onClick}
     className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors ${
       active
-        ? "border-gold bg-gold/20 text-maroon dark:text-gold"
-        : "border-gold/30 bg-card/70 text-muted-foreground hover:border-gold/60 hover:text-maroon dark:hover:text-gold"
+        ? "border-gold bg-gold text-[#0d0d0d]"
+        : "border-[#8B6914] bg-[#1f0f0f] text-gold hover:border-gold"
     }`}
   >
     {track}
   </button>
+);
+
+const TopPlacementPaths = ({ paths, totalFiltered }: { paths: PlacementPathCard[]; totalFiltered: number }) => (
+  <section id="top-placement-paths" className="glass rounded-2xl p-5 border border-[#3a2a1a] shadow-card">
+    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
+      <div>
+        <h2 className="text-2xl text-gold">Top Placement Paths</h2>
+        <p className="text-sm text-muted-foreground">
+          Showing {paths.length} anonymized paths from {totalFiltered} filtered outcomes.
+        </p>
+      </div>
+    </div>
+
+    <div className="grid gap-4 md:grid-cols-2">
+      {paths.map((path, index) => (
+        <article
+          key={`${path.role}-${path.company}-${path.route}-${index}`}
+          className="rounded-2xl border border-[#3a2a1a] bg-[#1f0f0f] p-5 text-ivory shadow-card hover-gold-glow"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-[#B8A89A]">Role</p>
+              <h3 className="mt-1 text-lg font-semibold text-gold">{path.role}</h3>
+            </div>
+
+            <span className="rounded-full border border-[#8B6914] bg-[#1a0a0a] px-2.5 py-1 text-xs font-semibold text-gold">
+              {path.route}
+            </span>
+          </div>
+
+          <div className="mt-4 space-y-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-[#B8A89A]">Company</p>
+              <p className="mt-1 text-sm text-ivory">{path.company}</p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-[#B8A89A]">Key Skills</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {path.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full border border-[#3a2a1a] bg-[#2a1a1a] px-2.5 py-1 text-xs text-gold"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-[#B8A89A]">Route</p>
+              <p className="mt-1 text-sm text-ivory">{path.route}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      {!paths.length && (
+        <div className="md:col-span-2 rounded-2xl border border-[#3a2a1a] bg-[#1f0f0f] p-8 text-center text-muted-foreground">
+          No placement paths match the current filters.
+        </div>
+      )}
+    </div>
+  </section>
 );
 
 const Dashboard = () => {
@@ -419,24 +496,58 @@ const Dashboard = () => {
   }, [filtered]);
 
   const summary = useMemo(() => {
-    const avgSal = filtered.length
-      ? (filtered.reduce((sum, d) => sum + salaryToLpa(d.Salary), 0) / filtered.length).toFixed(1)
-      : "0";
-    return {
-      avgSal,
-      total: filtered.length,
-      topCompany: byCompany[0]?.name ?? "-",
-      topRole: byRole[0]?.name ?? "-",
-    };
-  }, [filtered, byCompany, byRole]);
+    if (!data.length) {
+      return DASHBOARD_SUMMARY_FALLBACK;
+    }
 
-  const journeyRows = useMemo(
-    () =>
-      [...filtered]
-        .sort((a, b) => b.Year - a.Year || salaryToLpa(b.Salary) - salaryToLpa(a.Salary))
-        .slice(0, 12),
-    [filtered],
-  );
+    const avgSal = (data.reduce((sum, d) => sum + salaryToLpa(d.Salary), 0) / data.length).toFixed(1);
+
+    const companyCounts = new Map<string, number>();
+    const roleCounts = new Map<string, number>();
+    data.forEach((entry) => {
+      companyCounts.set(entry.Company, (companyCounts.get(entry.Company) || 0) + 1);
+      roleCounts.set(entry.Role, (roleCounts.get(entry.Role) || 0) + 1);
+    });
+
+    const topCompany =
+      Array.from(companyCounts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ??
+      DASHBOARD_SUMMARY_FALLBACK.topCompany;
+    const topRole =
+      Array.from(roleCounts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? DASHBOARD_SUMMARY_FALLBACK.topRole;
+
+    return {
+      avgSal: Number.isFinite(Number(avgSal)) ? avgSal : DASHBOARD_SUMMARY_FALLBACK.avgSal,
+      total:
+        data.length > 0
+          ? Math.max(data.length, DASHBOARD_SUMMARY_FALLBACK.total)
+          : DASHBOARD_SUMMARY_FALLBACK.total,
+      topCompany,
+      topRole,
+    };
+  }, [data]);
+
+  const topPlacementPaths = useMemo<PlacementPathCard[]>(() => {
+    const seen = new Set<string>();
+
+    return [...filtered]
+      .filter((entry) => entry.Role && entry.Company)
+      .sort((a, b) => b.Year - a.Year)
+      .filter((entry) => {
+        const key = `${entry.Role}|${entry.Company}|${entry["Placement Type"]}`.toLowerCase();
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      })
+      .slice(0, 4)
+      .map((entry) => ({
+        role: entry.Role,
+        company: entry.Company,
+        route: entry["Placement Type"],
+        skills: [entry.Skill1, entry.Skill2, entry.Skill3].filter(Boolean).slice(0, 3),
+      }));
+  }, [filtered]);
 
   const normalizedUserSkills = useMemo(() => parseSkills(careerProfile.skills), [careerProfile.skills]);
 
@@ -543,10 +654,9 @@ const Dashboard = () => {
       4,
     );
     const topHiring = getTopValues(simulationPool.map((item) => item.Company), 3);
-    const avgSalary =
-      simulationPool.length
-        ? (simulationPool.reduce((sum, item) => sum + salaryToLpa(item.Salary), 0) / simulationPool.length).toFixed(1)
-        : "0.0";
+    const avgSalary = simulationPool.length
+      ? (simulationPool.reduce((sum, item) => sum + salaryToLpa(item.Salary), 0) / simulationPool.length).toFixed(1)
+      : "0.0";
 
     const campusResource =
       selectedTrack === "Data"
@@ -596,7 +706,9 @@ const Dashboard = () => {
 
     return `Your strongest match trend points to ${peopleLikeYou.topRole}. Alumni with similar profiles most often landed at ${
       peopleLikeYou.companies.join(", ") || "top recruiters"
-    } and usually built skills in ${peopleLikeYou.skills.map(formatSkill).join(", ") || "core fundamentals"}. Typical outcome in this lane is around Rs ${peopleLikeYou.avgSalary} LPA.`;
+    } and usually built skills in ${
+      peopleLikeYou.skills.map(formatSkill).join(", ") || "core fundamentals"
+    }. Typical outcome in this lane is around Rs ${peopleLikeYou.avgSalary} LPA.`;
   };
 
   const handleExplainTwin = async () => {
@@ -668,7 +780,6 @@ Generate:
     setRoadmapHint("");
 
     const prompt = `Create a concise roadmap summary for an Andhra University student.
-
 Target role: ${pathSimulator.role}
 Role track: ${pathSimulator.track}
 Top skills: ${pathSimulator.topSkills.join(", ") || "N/A"}
@@ -796,7 +907,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
     <div className="max-w-7xl mx-auto px-6 py-10">
       <header className="mb-8">
         <p className="text-gold font-semibold uppercase tracking-[0.18em] text-xs md:text-sm">Data Intelligence</p>
-        <h1 className="text-3xl md:text-5xl text-maroon dark:text-ivory mt-2">Alumni Insights Dashboard</h1>
+        <h1 className="text-3xl md:text-5xl text-gold mt-2">Alumni Insights Dashboard</h1>
         <p className="text-muted-foreground mt-1">
           Real placement intelligence from AU alumni. Explore outcomes, find your career twin, and plan your next move.
         </p>
@@ -808,28 +919,61 @@ Return 4 short, action-oriented bullets under 120 words.`;
         ))}
       </div>
 
-      <div className="glass rounded-2xl p-5 shadow-card border border-gold/20 grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="glass rounded-2xl p-5 shadow-card border border-[#3a2a1a] grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <Select label="Year" value={year} onChange={setYear} options={opts.years} />
         <Select label="Company" value={company} onChange={setCompany} options={opts.companies} />
         <Select label="Role" value={role} onChange={setRole} options={opts.roles} />
         <Select label="Skill Level" value={skill} onChange={setSkill} options={opts.skills} />
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-gold/20 bg-gold/5 px-3 py-2">
-        <a href="#dashboard-insights" className="rounded-full bg-card/80 border border-gold/25 px-3 py-1.5 text-xs font-semibold text-maroon dark:text-gold hover:bg-gold/10">Dashboard</a>
-        <a href="#career-twin" className="rounded-full bg-card/80 border border-gold/25 px-3 py-1.5 text-xs font-semibold text-maroon dark:text-gold hover:bg-gold/10">Career Twin</a>
-        <a href="#path-simulator" className="rounded-full bg-card/80 border border-gold/25 px-3 py-1.5 text-xs font-semibold text-maroon dark:text-gold hover:bg-gold/10">Path Simulator</a>
-        <a href="#journey-explorer" className="rounded-full bg-card/80 border border-gold/25 px-3 py-1.5 text-xs font-semibold text-maroon dark:text-gold hover:bg-gold/10">Journey Explorer</a>
-        <a href="#alumni-form" className="rounded-full bg-card/80 border border-gold/25 px-3 py-1.5 text-xs font-semibold text-maroon dark:text-gold hover:bg-gold/10">Alumni Form</a>
+      <div className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl border border-[#3a2a1a] bg-[#0d0d0d] px-3 py-2">
+        <a
+          href="#dashboard-insights"
+          className="rounded-full bg-[#1f0f0f] border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:border-gold"
+        >
+          Dashboard
+        </a>
+        <a
+          href="#career-twin"
+          className="rounded-full bg-[#1f0f0f] border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:border-gold"
+        >
+          Career Twin
+        </a>
+        <a
+          href="#path-simulator"
+          className="rounded-full bg-[#1f0f0f] border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:border-gold"
+        >
+          Path Simulator
+        </a>
+        <a
+          href="#top-placement-paths"
+          className="rounded-full bg-[#1f0f0f] border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:border-gold"
+        >
+          Top Placement Paths
+        </a>
+        <a
+          href="#alumni-form"
+          className="rounded-full bg-[#1f0f0f] border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:border-gold"
+        >
+          Alumni Form
+        </a>
       </div>
 
-      <section className="grid gap-6 xl:grid-cols-12">
+      <section className="grid gap-6 xl:grid-cols-12 items-start">
         <div id="dashboard-insights" className="space-y-6 xl:col-span-7">
           <div className="grid md:grid-cols-2 gap-6">
             <ChartCard title="Top Hiring Companies">
               <BarChart data={byCompany} margin={{ top: 5, right: 10, bottom: 30, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={theme.grid} />
-                <XAxis dataKey="name" angle={-25} textAnchor="end" interval={0} height={60} stroke={theme.axis} fontSize={12} />
+                <XAxis
+                  dataKey="name"
+                  angle={-25}
+                  textAnchor="end"
+                  interval={0}
+                  height={60}
+                  stroke={theme.axis}
+                  fontSize={12}
+                />
                 <YAxis stroke={theme.axis} fontSize={12} />
                 <Tooltip {...tooltipProps} />
                 <Bar dataKey="value" fill={MAROON_LIGHT} radius={[8, 8, 0, 0]} />
@@ -896,70 +1040,27 @@ Return 4 short, action-oriented bullets under 120 words.`;
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: "Avg Salary", value: `Rs ${summary.avgSal} LPA` },
+              { label: "Average Salary", value: `₹${summary.avgSal} LPA` },
               { label: "Total Placements", value: summary.total },
               { label: "Top Company", value: summary.topCompany },
               { label: "Top Role", value: summary.topRole },
             ].map((s) => (
-              <div key={s.label} className="rounded-2xl p-5 border border-gold/30 bg-maroon text-ivory shadow-card hover-gold-glow">
+              <div
+                key={s.label}
+                className="rounded-2xl p-5 border border-[#3a2a1a] bg-[#1f0f0f] text-ivory shadow-card hover-gold-glow"
+              >
                 <div className="text-gold text-2xl font-extrabold">{s.value}</div>
-                <div className="text-ivory/75 text-sm mt-1">{s.label}</div>
+                <div className="text-[#B8A89A] text-sm mt-1">{s.label}</div>
               </div>
             ))}
           </div>
 
-          <section id="journey-explorer" className="glass rounded-2xl p-5 border border-gold/20 shadow-card">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-3">
-              <div>
-                <h2 className="text-2xl text-maroon dark:text-ivory">Alumni Journey Explorer</h2>
-                <p className="text-sm text-muted-foreground">
-                  Showing {journeyRows.length} journeys from {filtered.length} filtered outcomes.
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-gold/20 overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead className="bg-gold/10 text-maroon dark:text-gold">
-                  <tr>
-                    <th className="text-left px-4 py-3">Alumnus</th>
-                    <th className="text-left px-4 py-3">Year</th>
-                    <th className="text-left px-4 py-3">Role</th>
-                    <th className="text-left px-4 py-3">Company</th>
-                    <th className="text-left px-4 py-3">Skills</th>
-                    <th className="text-left px-4 py-3">Internship</th>
-                    <th className="text-left px-4 py-3">Salary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {journeyRows.map((entry, index) => (
-                    <tr key={`${entry.Name}-${entry.Company}-${entry.Year}-${index}`} className="border-t border-gold/10">
-                      <td className="px-4 py-3 font-medium text-maroon dark:text-ivory">{entry.Name}</td>
-                      <td className="px-4 py-3">{entry.Year}</td>
-                      <td className="px-4 py-3">{entry.Role}</td>
-                      <td className="px-4 py-3">{entry.Company}</td>
-                      <td className="px-4 py-3 text-xs md:text-sm">{[entry.Skill1, entry.Skill2, entry.Skill3].join(", ")}</td>
-                      <td className="px-4 py-3">{entry.Internship}</td>
-                      <td className="px-4 py-3">{formatSalary(entry.Salary)}</td>
-                    </tr>
-                  ))}
-
-                  {!journeyRows.length && (
-                    <tr>
-                      <td colSpan={7} className="px-4 py-10 text-center text-muted-foreground">
-                        No alumni journeys match the current filters.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </section>
+          <TopPlacementPaths paths={topPlacementPaths} totalFiltered={filtered.length} />
         </div>
 
         <div className="space-y-6 xl:col-span-5">
-          <section id="career-twin" className="glass rounded-2xl p-6 border border-gold/20 shadow-card">
-            <h2 className="text-2xl text-maroon dark:text-ivory">Find Your Career Twin</h2>
+          <section id="career-twin" className="glass rounded-2xl p-6 border border-[#3a2a1a] shadow-card">
+            <h2 className="text-2xl text-gold">Find Your Career Twin</h2>
             <p className="text-sm text-muted-foreground mt-1">
               Match with alumni who started from a similar point and see where they reached.
             </p>
@@ -981,7 +1082,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   step="0.01"
                   value={careerProfile.cgpa}
                   onChange={(event) => setCareerProfile((prev) => ({ ...prev, cgpa: event.target.value }))}
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                 />
               </label>
 
@@ -1006,31 +1107,35 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   value={careerProfile.skills}
                   onChange={(event) => setCareerProfile((prev) => ({ ...prev, skills: event.target.value }))}
                   placeholder="Python, SQL, React"
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                 />
               </label>
             </div>
 
             <div className="mt-5 space-y-3">
               {twinCandidates.map((candidate, index) => (
-                <div key={`${candidate.alum.Name}-${candidate.alum.Company}-${index}`} className="rounded-xl border border-gold/20 bg-card/70 p-4">
+                <div
+                  key={`${candidate.alum.Name}-${candidate.alum.Company}-${index}`}
+                  className="rounded-xl border border-[#3a2a1a] bg-[#1f0f0f] p-4"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-maroon dark:text-ivory">{candidate.alum.Name}</p>
+                      <p className="font-semibold text-gold">{candidate.alum.Name}</p>
                       <p className="text-sm text-muted-foreground">
                         {candidate.alum.Role} at {candidate.alum.Company} ({candidate.alum.Year})
                       </p>
                     </div>
-                    <span className="rounded-full bg-gold/20 px-2.5 py-1 text-xs font-semibold text-maroon dark:text-gold">
+                    <span className="rounded-full border border-[#8B6914] bg-[#1a0a0a] px-2.5 py-1 text-xs font-semibold text-gold">
                       {candidate.score.toFixed(1)}% match
                     </span>
                   </div>
 
                   <p className="text-xs text-muted-foreground mt-2">
-                    Shared skills: {candidate.sharedSkills.length ? candidate.sharedSkills.map(formatSkill).join(", ") : "None listed"}
+                    Skills: {candidate.sharedSkills.length ? candidate.sharedSkills.map(formatSkill).join(", ") : "Based on profile match"}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Score mix: role {(candidate.breakdown.role * 100).toFixed(0)}%, skills {(candidate.breakdown.skills * 100).toFixed(0)}%, cgpa {(candidate.breakdown.cgpa * 100).toFixed(0)}%
+                    Score mix: role {(candidate.breakdown.role * 100).toFixed(0)}%, skills{" "}
+                    {(candidate.breakdown.skills * 100).toFixed(0)}%, cgpa {(candidate.breakdown.cgpa * 100).toFixed(0)}%
                   </p>
                 </div>
               ))}
@@ -1041,10 +1146,13 @@ Return 4 short, action-oriented bullets under 120 words.`;
             </div>
 
             {peopleLikeYou && (
-              <div className="mt-4 rounded-xl border border-gold/25 bg-gold/10 p-4">
-                <p className="text-sm font-semibold text-maroon dark:text-gold">People like you chose this path:</p>
+              <div className="mt-4 rounded-xl border border-[#3a2a1a] bg-[#1f0f0f] p-4">
+                <p className="text-sm font-semibold text-gold">People like you chose this path</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Most similar alumni moved into <strong>{peopleLikeYou.topRole}</strong>, commonly joined {peopleLikeYou.companies.join(", ") || "top recruiters"}, and built {peopleLikeYou.skills.map(formatSkill).join(", ")} before landing roles around <strong>Rs {peopleLikeYou.avgSalary} LPA</strong>.
+                  Most similar alumni moved into <strong>{peopleLikeYou.topRole}</strong>, commonly joined{" "}
+                  {peopleLikeYou.companies.join(", ") || "top recruiters"}, and built{" "}
+                  {peopleLikeYou.skills.map(formatSkill).join(", ")} before landing roles around{" "}
+                  <strong>Rs {peopleLikeYou.avgSalary} LPA</strong>.
                 </p>
               </div>
             )}
@@ -1054,7 +1162,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                 type="button"
                 onClick={handleExplainTwin}
                 disabled={twinExplanationLoading || !twinCandidates.length}
-                className="rounded-xl bg-gold text-maroon font-semibold px-4 py-2 hover:bg-gold-soft disabled:opacity-50"
+                className="rounded-xl bg-gold text-[#0d0d0d] font-semibold px-4 py-2 hover:bg-gold-soft disabled:opacity-50"
               >
                 {twinExplanationLoading ? "Generating AI twin insight..." : "Generate AI twin explanation"}
               </button>
@@ -1062,24 +1170,24 @@ Return 4 short, action-oriented bullets under 120 words.`;
             </div>
 
             {twinExplanation && (
-              <div className="mt-4 rounded-xl border border-gold/20 bg-card/70 p-4">
-                <p className="text-sm font-semibold text-maroon dark:text-gold">Twin Insight</p>
+              <div className="mt-4 rounded-xl border border-[#3a2a1a] bg-[#1f0f0f] p-4">
+                <p className="text-sm font-semibold text-gold">Twin Insight</p>
                 <p className="text-sm text-muted-foreground whitespace-pre-line mt-1">{twinExplanation}</p>
               </div>
             )}
           </section>
 
-          <section id="path-simulator" className="glass rounded-2xl p-6 border border-gold/20 shadow-card">
-            <h2 className="text-2xl text-maroon dark:text-ivory">Path Simulator and Next Step Recommendation</h2>
+          <section id="path-simulator" className="glass rounded-2xl p-6 border border-[#3a2a1a] shadow-card">
+            <h2 className="text-2xl text-gold">Path Simulator and Next Step Recommendation</h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Role-based action path generated from alumni outcomes + roadmap context.
+              Role-based action path generated from alumni outcomes and roadmap context.
             </p>
 
-            <div className="mt-4 rounded-xl border border-gold/20 bg-card/70 p-4">
+            <div className="mt-4 rounded-xl border border-[#3a2a1a] bg-[#1f0f0f] p-4">
               <p className="text-sm text-muted-foreground">Likely role path</p>
-              <p className="text-lg font-semibold text-maroon dark:text-ivory">{pathSimulator.role}</p>
+              <p className="text-lg font-semibold text-gold">{pathSimulator.role}</p>
               <p className="text-sm text-muted-foreground mt-2">
-                Track: {pathSimulator.track} · Avg salary trend: <strong>Rs {pathSimulator.avgSalary} LPA</strong>
+                Track: {pathSimulator.track} · Avg salary trend <strong>Rs {pathSimulator.avgSalary} LPA</strong>
               </p>
               <p className="text-sm text-muted-foreground mt-1">
                 Frequent hiring companies: {pathSimulator.topHiring.join(", ") || "No companies found"}
@@ -1088,7 +1196,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
             </div>
 
             <div className="mt-4 grid md:grid-cols-3 gap-3">
-              <div className="rounded-xl border border-gold/20 p-3 bg-card/70">
+              <div className="rounded-xl border border-[#3a2a1a] p-3 bg-[#1f0f0f]">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">30 days</p>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                   {pathSimulator.plan30.map((item) => (
@@ -1097,7 +1205,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                 </ul>
               </div>
 
-              <div className="rounded-xl border border-gold/20 p-3 bg-card/70">
+              <div className="rounded-xl border border-[#3a2a1a] p-3 bg-[#1f0f0f]">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">60 days</p>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                   {pathSimulator.plan60.map((item) => (
@@ -1106,7 +1214,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                 </ul>
               </div>
 
-              <div className="rounded-xl border border-gold/20 p-3 bg-card/70">
+              <div className="rounded-xl border border-[#3a2a1a] p-3 bg-[#1f0f0f]">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">90 days</p>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                   {pathSimulator.plan90.map((item) => (
@@ -1116,8 +1224,8 @@ Return 4 short, action-oriented bullets under 120 words.`;
               </div>
             </div>
 
-            <div className="mt-4 rounded-xl border border-gold/20 bg-card/70 p-4">
-              <p className="text-sm font-semibold text-maroon dark:text-gold">Role-based roadmap context (roadmap.sh)</p>
+            <div className="mt-4 rounded-xl border border-[#3a2a1a] bg-[#1f0f0f] p-4">
+              <p className="text-sm font-semibold text-gold">Role-based roadmap context from roadmap.sh</p>
               <div className="mt-2 space-y-2">
                 {pathSimulator.roadmapLinks.map((link) => (
                   <a
@@ -1125,9 +1233,9 @@ Return 4 short, action-oriented bullets under 120 words.`;
                     href={link.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="block rounded-lg border border-gold/15 px-3 py-2 hover:bg-gold/10 transition-colors"
+                    className="block rounded-lg border border-[#3a2a1a] px-3 py-2 hover:bg-[#2a1a1a] transition-colors"
                   >
-                    <p className="font-semibold text-sm text-maroon dark:text-ivory">{link.title}</p>
+                    <p className="font-semibold text-sm text-gold">{link.title}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{link.note}</p>
                   </a>
                 ))}
@@ -1138,40 +1246,51 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   type="button"
                   onClick={handleGenerateRoadmapSummary}
                   disabled={roadmapLoading}
-                  className="rounded-xl bg-gold text-maroon font-semibold px-4 py-2 hover:bg-gold-soft disabled:opacity-50"
+                  className="rounded-xl bg-gold text-[#0d0d0d] font-semibold px-4 py-2 hover:bg-gold-soft disabled:opacity-50"
                 >
                   {roadmapLoading ? "Generating AI roadmap summary..." : "Generate AI roadmap summary"}
                 </button>
                 {roadmapHint && <span className="text-xs text-muted-foreground">{roadmapHint}</span>}
               </div>
 
-              {roadmapSummary && (
-                <p className="text-sm text-muted-foreground whitespace-pre-line mt-3">{roadmapSummary}</p>
-              )}
-
+             {roadmapSummary && (
+  <div
+    className="mt-3 text-sm text-muted-foreground space-y-1 leading-relaxed [&_strong]:text-gold [&_strong]:font-semibold"
+    dangerouslySetInnerHTML={{
+      __html: roadmapSummary
+        // Bold: **text** → <strong>text</strong>
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        // Bullet lines: lines starting with * or - → <li> items
+        .replace(/^[*-]\s+(.+)$/gm, "<li class='flex gap-2'><span class='text-gold mt-0.5'>▸</span><span>$1</span></li>")
+        // Numbered lines: 1. text → ordered items
+        .replace(/^\d+\.\s+(.+)$/gm, "<li class='flex gap-2'><span class='text-gold mt-0.5'>▸</span><span>$1</span></li>")
+        // Wrap consecutive <li> blocks in <ul>
+        .replace(/(<li[\s\S]*?<\/li>\n?)+/g, (match) => `<ul class='space-y-2 mt-1'>${match}</ul>`)
+        // Remaining plain paragraphs
+        .replace(/^(?!<[ul|li]).+$/gm, (line) => line.trim() ? `<p>${line}</p>` : ""),
+    }}
+  />
+)}
               <Link
                 to={chatbotPrefillUrl}
-                className="mt-4 inline-flex items-center justify-center rounded-xl bg-maroon text-ivory font-semibold px-4 py-2 hover:bg-maroon-light transition-colors"
+                className="mt-4 inline-flex items-center justify-center rounded-xl bg-[#0d9488] text-[#0d0d0d] font-semibold px-4 py-2 hover:bg-[#0b7f75] transition-colors"
               >
                 Continue in AI Mentor with this path
               </Link>
             </div>
           </section>
 
-          <section id="alumni-form" className="glass rounded-2xl p-6 border border-gold/20 shadow-card">
+          <section id="alumni-form" className="glass rounded-2xl p-6 border border-[#3a2a1a] shadow-card">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
               <div>
-                <h2 className="text-2xl text-maroon dark:text-ivory">Alumni Data Collection Form (MVP)</h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Demo-first mode: store entries locally, then copy JSON payload for manual curation.
-                </p>
+                <h2 className="text-2xl text-gold">Add to Alumni Dataset</h2>
               </div>
 
               {!!localAlumni.length && (
                 <button
                   type="button"
                   onClick={handleClearLocalEntries}
-                  className="rounded-xl border border-gold/40 px-4 py-2 text-sm font-semibold text-maroon dark:text-gold hover:bg-gold/10"
+                  className="rounded-xl border border-[#8B6914] px-4 py-2 text-sm font-semibold text-gold hover:bg-[#1f0f0f]"
                 >
                   Clear local demo entries
                 </button>
@@ -1185,7 +1304,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   type="text"
                   value={alumniForm.name}
                   onChange={(event) => setAlumniForm((prev) => ({ ...prev, name: event.target.value }))}
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                   required
                 />
               </label>
@@ -1196,7 +1315,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   type="text"
                   value={alumniForm.company}
                   onChange={(event) => setAlumniForm((prev) => ({ ...prev, company: event.target.value }))}
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                   required
                 />
               </label>
@@ -1207,7 +1326,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   type="text"
                   value={alumniForm.role}
                   onChange={(event) => setAlumniForm((prev) => ({ ...prev, role: event.target.value }))}
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                   required
                 />
               </label>
@@ -1218,7 +1337,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   type="number"
                   value={alumniForm.year}
                   onChange={(event) => setAlumniForm((prev) => ({ ...prev, year: event.target.value }))}
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                   required
                 />
               </label>
@@ -1232,7 +1351,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   step="0.01"
                   value={alumniForm.cgpa}
                   onChange={(event) => setAlumniForm((prev) => ({ ...prev, cgpa: event.target.value }))}
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                   required
                 />
               </label>
@@ -1244,7 +1363,7 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   step="0.1"
                   value={alumniForm.salary}
                   onChange={(event) => setAlumniForm((prev) => ({ ...prev, salary: event.target.value }))}
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                   required
                 />
               </label>
@@ -1277,15 +1396,12 @@ Return 4 short, action-oriented bullets under 120 words.`;
                   value={alumniForm.skills}
                   onChange={(event) => setAlumniForm((prev) => ({ ...prev, skills: event.target.value }))}
                   placeholder="Java, Spring Boot, SQL"
-                  className="bg-card/80 border border-gold/25 rounded-xl px-3 py-2 text-maroon dark:text-ivory focus:outline-none focus:ring-2 focus:ring-gold"
+                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
                 />
               </label>
 
               <div className="md:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
-                <button
-                  type="submit"
-                  className="rounded-xl bg-gold text-maroon font-semibold px-5 py-2.5 hover:bg-gold-soft"
-                >
+                <button type="submit" className="rounded-xl bg-gold text-[#0d0d0d] font-semibold px-5 py-2.5 hover:bg-gold-soft">
                   Add alumni journey
                 </button>
                 {formStatus && <span className="text-sm text-muted-foreground">{formStatus}</span>}
@@ -1293,13 +1409,13 @@ Return 4 short, action-oriented bullets under 120 words.`;
             </form>
 
             {latestPayload && (
-              <div className="mt-5 rounded-xl border border-gold/20 bg-card/70 p-4">
+              <div className="mt-5 rounded-xl border border-[#3a2a1a] bg-[#1f0f0f] p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <p className="text-sm font-semibold text-maroon dark:text-gold">Latest JSON payload</p>
+                  <p className="text-sm font-semibold text-gold">Latest JSON payload</p>
                   <button
                     type="button"
                     onClick={handleCopyPayload}
-                    className="rounded-lg border border-gold/40 px-3 py-1.5 text-xs font-semibold text-maroon dark:text-gold hover:bg-gold/10"
+                    className="rounded-lg border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:bg-[#2a1a1a]"
                   >
                     {copyStatus === "copied" ? "Copied" : copyStatus === "error" ? "Copy failed" : "Copy payload"}
                   </button>

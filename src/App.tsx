@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Chatbot from "./pages/Chatbot";
 import Ecosystem from "./pages/Ecosystem";
+import Alumni from "./pages/Alumni";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/chatbot" element={<Chatbot />} />
             <Route path="/ecosystem" element={<Ecosystem />} />
+            <Route path="/alumni" element={<Alumni />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

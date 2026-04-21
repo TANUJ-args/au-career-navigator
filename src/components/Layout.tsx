@@ -11,8 +11,8 @@ const Layout = () => (
     <main className="relative z-10 flex-1 pt-16 lg:pt-20">
       <Outlet />
     </main>
-    <footer className="relative z-10 border-t border-gold/20 bg-maroon text-ivory/80 text-sm py-6 text-center">
-      AU Career Compass · Built for AU@100 Hackathon · Andhra University
+    <footer className="relative z-10 border-t border-[#8B6914]/60 bg-[#8B1A1A] text-white/85 text-sm py-6 text-center">
+      AU Career Navigator · Built in collaboration with CPDC · Andhra University · AU@100
     </footer>
   </div>
 );

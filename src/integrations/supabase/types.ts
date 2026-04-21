@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alumni_submissions: {
+        Row: {
+          id: string
+          created_at: string
+          full_name: string
+          graduation_year: number
+          branch: string
+          current_role: string
+          current_company: string
+          city_country: string | null
+          linkedin_url: string | null
+          advice: string
+          skills_helped: string
+          career_path: string
+          status: string
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          full_name: string
+          graduation_year: number
+          branch: string
+          current_role: string
+          current_company: string
+          city_country?: string | null
+          linkedin_url?: string | null
+          advice: string
+          skills_helped: string
+          career_path: string
+          status?: string
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          full_name?: string
+          graduation_year?: number
+          branch?: string
+          current_role?: string
+          current_company?: string
+          city_country?: string | null
+          linkedin_url?: string | null
+          advice?: string
+          skills_helped?: string
+          career_path?: string
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

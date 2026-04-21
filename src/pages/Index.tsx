@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, BarChart3, Bot, Building2, Sparkles } from "lucide-react";
 import FamousAlumniSection from "@/components/FamousAlumniSection";
-
+import { Share2 } from "lucide-react";
 const stats = [
   { value: "3,000+", label: "Alumni Records" },
-  { value: "11", label: "Top Hiring Companies" },
-  { value: "90+", label: "Startups at AHub" },
+  { value: "11", label: "Top Companies" },
+  { value: "90+", label: "Active Startups at AHub" },
   { value: "₹131Cr", label: "NASSCOM CoE Ecosystem" },
 ];
 
@@ -37,7 +37,7 @@ const Index = () => {
 
         <div className="max-w-7xl mx-auto px-6 py-24 md:py-32 text-center relative z-10">
           <p className="uppercase tracking-[0.24em] text-gold font-semibold text-xs md:text-sm reveal-up">
-            AU@100 Hackathon Project
+            AU@100 Hackathon ProjectUNIVERSITY
           </p>
           <h1 className="mt-4 text-5xl md:text-7xl lg:text-8xl text-ivory reveal-up" style={{ animationDelay: "120ms" }}>
             Navigate Your Future
@@ -46,14 +46,14 @@ const Index = () => {
             Powered by a Century of Andhra University Legacy
           </p>
           <p className="mt-6 text-base md:text-lg text-ivory/75 max-w-3xl mx-auto reveal-up" style={{ animationDelay: "340ms" }}>
-            A premium, unified career platform connecting AU students to verified placement trends,
+            A premium, unified career platform connecting AU students to verified placement trends,, innovation
             AI-guided planning, and high-impact innovation opportunities.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4 reveal-up" style={{ animationDelay: "420ms" }}>
             <Link
               to="/dashboard"
-              className="inline-flex items-center gap-2 bg-gold text-maroon font-semibold px-6 py-3 rounded-xl hover:bg-gold-soft hover-gold-glow"
+              className="inline-flex items-center gap-2 bg-gold text-[#0d0d0d] font-semibold px-6 py-3 rounded-xl hover:bg-gold-soft hover-gold-glow"
             >
               Explore Dashboard <ArrowRight className="w-4 h-4" />
             </Link>
@@ -82,8 +82,47 @@ const Index = () => {
 
       <section className="max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-12">
+          <h2 className="text-2xl font-semibold text-gold mt-3">Built Around CPDC's Vision</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          <article
+            className="glass rounded-2xl p-7 shadow-card reveal-up"
+            style={{ animationDelay: `0ms` }}
+          >
+            <h3 className="text-2xl text-gold">📊 Alumni Intelligence</h3>
+            <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
+              Uses CPDC placement outcomes to show students exactly where AU graduates land and what skills got them
+              there.
+            </p>
+          </article>
+          <article
+            className="glass rounded-2xl p-7 shadow-card reveal-up"
+            style={{ animationDelay: `100ms` }}
+          >
+            <h3 className="text-2xl text-gold">🌐 Ecosystem Discovery</h3>
+            <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
+              Puts CPDC's full ecosystem — ā Hub, NASSCOM CoE, Skill Labs — in front of every student automatically.
+            </p>
+          </article>
+          <article
+            className="glass rounded-2xl p-7 shadow-card reveal-up"
+            style={{ animationDelay: `200ms` }}
+          >
+            <h3 className="text-2xl text-gold">🔄 Living Data Network</h3>
+            <p className="mt-3 text-muted-foreground text-sm leading-relaxed">
+              Alumni form creates a self-updating database that grows stronger with every graduating batch.
+            </p>
+          </article>
+        </div>
+        <p className="text-center mt-8 text-gold italic">
+          Aligned with CPDC's mission: Empowering Futures • Inspiring Innovation • Building Entrepreneurs
+        </p>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <div className="text-center mb-12">
           <p className="text-gold font-semibold uppercase tracking-[0.2em] text-xs md:text-sm">Platform Modules</p>
-          <h2 className="text-3xl md:text-5xl text-maroon dark:text-ivory mt-3">
+          <h2 className="text-2xl font-semibold text-gold mt-3">
             Built for Outcomes, Not Guesswork
           </h2>
           <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
@@ -97,10 +136,10 @@ const Index = () => {
               className="glass rounded-2xl p-7 shadow-card hover-gold-glow reveal-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="w-12 h-12 rounded-xl bg-maroon/10 dark:bg-gold/20 text-maroon dark:text-gold flex items-center justify-center mb-5">
+              <div className="w-12 h-12 rounded-xl bg-[#1a0a0a] text-gold flex items-center justify-center mb-5">
                 <m.icon className="w-6 h-6" />
               </div>
-              <h3 className="text-2xl text-maroon dark:text-ivory">{m.title}</h3>
+              <h3 className="text-2xl text-gold">{m.title}</h3>
               <p className="mt-3 text-muted-foreground text-sm leading-relaxed">{m.desc}</p>
             </article>
           ))}
@@ -108,13 +147,36 @@ const Index = () => {
       </section>
 
       <FamousAlumniSection />
+      
+      <section className="max-w-7xl mx-auto px-6 pb-20">
+        <div className="rounded-3xl glass p-10 md:p-14 shadow-card border border-[#3a2a1a] relative overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute right-0 top-0 w-64 h-64 bg-gold/5 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative z-10">
+            <div>
+              <p className="uppercase tracking-[0.18em] text-gold text-xs md:text-sm font-semibold">Give Back to AU</p>
+              <h2 className="text-2xl md:text-3xl font-semibold mt-3 text-ivory">Are You an AU Alumni?</h2>
+              <p className="mt-4 text-ivory/75 max-w-2xl text-sm md:text-base leading-relaxed">
+                Your journey is the blueprint for the next generation. Share your placement story, the skills that mattered most, and your advice to help current students see what's possible.
+              </p>
+            </div>
+            <Link
+              to="/alumni"
+              className="inline-flex items-center justify-center gap-2 bg-transparent border border-gold text-gold font-semibold px-7 py-3 rounded-xl hover:bg-gold/10 transition-colors whitespace-nowrap shrink-0"
+            >
+              Share My Journey <Share2 className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <section className="max-w-7xl mx-auto px-6 pb-20">
-        <div className="rounded-3xl bg-maroon text-ivory p-10 md:p-14 shadow-card border border-gold/30">
+        <div className="rounded-3xl bg-[#1f0f0f] text-ivory p-10 md:p-14 shadow-card border border-[#3a2a1a]">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
               <p className="uppercase tracking-[0.18em] text-gold text-xs md:text-sm font-semibold">Start Strong</p>
-              <h2 className="text-3xl md:text-5xl mt-3">Make the Next 100 Years Yours</h2>
+              <h2 className="text-2xl font-semibold mt-3">Make the Next 100 Years Yours</h2>
               <p className="mt-4 text-ivory/75 max-w-2xl">
                 Your AU journey can lead to global roles, startups, and leadership. Start by exploring
                 verified alumni outcomes and map your next step today.
@@ -122,7 +184,7 @@ const Index = () => {
             </div>
             <Link
               to="/ecosystem"
-              className="inline-flex items-center justify-center gap-2 bg-gold text-maroon font-semibold px-7 py-3 rounded-xl hover:bg-gold-soft hover-gold-glow"
+              className="inline-flex items-center justify-center gap-2 bg-gold text-[#0d0d0d] font-semibold px-7 py-3 rounded-xl hover:bg-gold-soft hover-gold-glow"
             >
               Discover Ecosystem <Sparkles className="w-4 h-4" />
             </Link>
