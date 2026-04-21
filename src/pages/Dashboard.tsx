@@ -32,7 +32,7 @@ type Alum = {
   Salary: number;
 };
 
-type RoleTrack = "All" | "SDE" | "Data" | "Core";
+type RoleTrack = "All" | "SDE" | "Data" | "Core ";
 
 type TwinCandidate = {
   alum: Alum;
@@ -60,7 +60,7 @@ const MINT = "#0d9488";
 const GOLD = "#C9A227";
 
 const LOCAL_ALUMNI_STORAGE_KEY = "au-alumni-mvp-submissions";
-const ROLE_TRACKS: RoleTrack[] = ["All", "SDE", "Data", "Core"];
+const ROLE_TRACKS: RoleTrack[] = ["All", "SDE", "Data"];
 const DASHBOARD_SUMMARY_FALLBACK = {
   avgSal: "14.5",
   total: 3001,
@@ -1279,153 +1279,8 @@ Return 4 short, action-oriented bullets under 120 words.`;
               </Link>
             </div>
           </section>
-
-          <section id="alumni-form" className="glass rounded-2xl p-6 border border-[#3a2a1a] shadow-card">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-              <div>
-                <h2 className="text-2xl text-gold">Add to Alumni Dataset</h2>
-              </div>
-
-              {!!localAlumni.length && (
-                <button
-                  type="button"
-                  onClick={handleClearLocalEntries}
-                  className="rounded-xl border border-[#8B6914] px-4 py-2 text-sm font-semibold text-gold hover:bg-[#1f0f0f]"
-                >
-                  Clear local demo entries
-                </button>
-              )}
-            </div>
-
-            <form onSubmit={handleAddAlumniJourney} className="mt-5 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-              <label className="flex flex-col text-sm">
-                <span className="text-muted-foreground mb-1 font-medium">Name</span>
-                <input
-                  type="text"
-                  value={alumniForm.name}
-                  onChange={(event) => setAlumniForm((prev) => ({ ...prev, name: event.target.value }))}
-                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-                  required
-                />
-              </label>
-
-              <label className="flex flex-col text-sm">
-                <span className="text-muted-foreground mb-1 font-medium">Company</span>
-                <input
-                  type="text"
-                  value={alumniForm.company}
-                  onChange={(event) => setAlumniForm((prev) => ({ ...prev, company: event.target.value }))}
-                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-                  required
-                />
-              </label>
-
-              <label className="flex flex-col text-sm">
-                <span className="text-muted-foreground mb-1 font-medium">Role</span>
-                <input
-                  type="text"
-                  value={alumniForm.role}
-                  onChange={(event) => setAlumniForm((prev) => ({ ...prev, role: event.target.value }))}
-                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-                  required
-                />
-              </label>
-
-              <label className="flex flex-col text-sm">
-                <span className="text-muted-foreground mb-1 font-medium">Year</span>
-                <input
-                  type="number"
-                  value={alumniForm.year}
-                  onChange={(event) => setAlumniForm((prev) => ({ ...prev, year: event.target.value }))}
-                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-                  required
-                />
-              </label>
-
-              <label className="flex flex-col text-sm">
-                <span className="text-muted-foreground mb-1 font-medium">CGPA</span>
-                <input
-                  type="number"
-                  min={0}
-                  max={10}
-                  step="0.01"
-                  value={alumniForm.cgpa}
-                  onChange={(event) => setAlumniForm((prev) => ({ ...prev, cgpa: event.target.value }))}
-                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-                  required
-                />
-              </label>
-
-              <label className="flex flex-col text-sm">
-                <span className="text-muted-foreground mb-1 font-medium">Salary (LPA or INR)</span>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={alumniForm.salary}
-                  onChange={(event) => setAlumniForm((prev) => ({ ...prev, salary: event.target.value }))}
-                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-                  required
-                />
-              </label>
-
-              <Select
-                label="Internship"
-                value={alumniForm.internship}
-                onChange={(value) => setAlumniForm((prev) => ({ ...prev, internship: value }))}
-                options={["Yes", "No"]}
-              />
-
-              <Select
-                label="Skill Level"
-                value={alumniForm.skillLevel}
-                onChange={(value) => setAlumniForm((prev) => ({ ...prev, skillLevel: value }))}
-                options={["Beginner", "Intermediate", "Advanced"]}
-              />
-
-              <Select
-                label="Placement Type"
-                value={alumniForm.placementType}
-                onChange={(value) => setAlumniForm((prev) => ({ ...prev, placementType: value }))}
-                options={["On-campus", "Off-campus"]}
-              />
-
-              <label className="md:col-span-2 lg:col-span-3 flex flex-col text-sm">
-                <span className="text-muted-foreground mb-1 font-medium">Skills (comma separated)</span>
-                <input
-                  type="text"
-                  value={alumniForm.skills}
-                  onChange={(event) => setAlumniForm((prev) => ({ ...prev, skills: event.target.value }))}
-                  placeholder="Java, Spring Boot, SQL"
-                  className="bg-[#2a1a1a] border border-[#3a2a1a] rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-gold"
-                />
-              </label>
-
-              <div className="md:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
-                <button type="submit" className="rounded-xl bg-gold text-[#0d0d0d] font-semibold px-5 py-2.5 hover:bg-gold-soft">
-                  Add alumni journey
-                </button>
-                {formStatus && <span className="text-sm text-muted-foreground">{formStatus}</span>}
-              </div>
-            </form>
-
-            {latestPayload && (
-              <div className="mt-5 rounded-xl border border-[#3a2a1a] bg-[#1f0f0f] p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                  <p className="text-sm font-semibold text-gold">Latest JSON payload</p>
-                  <button
-                    type="button"
-                    onClick={handleCopyPayload}
-                    className="rounded-lg border border-[#8B6914] px-3 py-1.5 text-xs font-semibold text-gold hover:bg-[#2a1a1a]"
-                  >
-                    {copyStatus === "copied" ? "Copied" : copyStatus === "error" ? "Copy failed" : "Copy payload"}
-                  </button>
-                </div>
-                <pre className="text-xs overflow-x-auto whitespace-pre-wrap text-muted-foreground">{latestPayload}</pre>
-              </div>
-            )}
-          </section>
-        </div>
-      </section>
+        </div>  
+      </section> 
     </div>
   );
 };
