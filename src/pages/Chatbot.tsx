@@ -21,7 +21,6 @@ interface StudentProfile {
   goal: "placed" | "startup";
 }
 
-// Backend expects this exact structure
 type ApiMsg = { role: "user" | "model"; text: string };
 
 // ── Constants ────────────────────────────────────────────
@@ -53,7 +52,7 @@ STRICT RESPONSE RULES:
 - Always end short responses with ONE follow-up question
 - Always mention ONE specific AU/CPDC resource relevant to their gap`;
 
-// ── Inline Profile Form Component ────────────────────────
+// ── Inline Profile Form ──────────────────────────────────
 function InlineProfileForm({
   onSubmit,
   submitted,
@@ -185,7 +184,6 @@ function TypingIndicator() {
 
 // ── Main Chatbot Component ───────────────────────────────
 export default function Chatbot() {
-  // UI Messages
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "bot",
@@ -195,10 +193,8 @@ export default function Chatbot() {
       formSubmitted: false,
     },
   ]);
-  
-  // Backend History (keeps the exact format the working API expects)
+
   const [apiHistory, setApiHistory] = useState<ApiMsg[]>([]);
-  
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [profileSubmitted, setProfileSubmitted] = useState(false);
@@ -210,23 +206,18 @@ export default function Chatbot() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  // ── Call Gemini via Supabase (Using the OLD Working Payload) ──
   const sendToGemini = async (history: ApiMsg[]) => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("gemini-chat", {
-        body: { messages: history }, // EXACT format that worked before
+        body: { messages: history },
       });
-      
+
       if (error) throw error;
-      
+
       const reply = data?.reply ?? "I couldn't get a response. Please try again.";
-      
-      // Update UI with bot response
       setMessages((prev) => [...prev, { role: "bot", content: reply }]);
-      // Update API history
       setApiHistory([...history, { role: "model", text: reply }]);
-      
     } catch (e: any) {
       console.error("Supabase Error:", e);
       setMessages((prev) => [
@@ -238,46 +229,31 @@ export default function Chatbot() {
     }
   };
 
-  // ── Handle Profile Form Submit ──────────────────────────
   const handleProfileSubmit = async (profile: StudentProfile) => {
-    // Mark form as submitted in UI
     setMessages((prev) =>
       prev.map((m, i) => (i === 0 ? { ...m, formSubmitted: true } : m))
     );
     setProfileSubmitted(true);
 
-    // Text shown to user
     const userText = `My profile: Branch: ${profile.branch}, Year: ${profile.year}, CGPA: ${profile.cgpa}, Skills: ${profile.skills || "none listed yet"}, Goal: ${profile.goal === "placed" ? "Get Placed" : "Build a Startup"}`;
-    
-    // Text sent to backend (sneaking the SYSTEM PROMPT in so it works with the old API)
     const backendText = `SYSTEM RULES:\n${SYSTEM_PROMPT}\n\nUSER PROFILE:\n${userText}\n\nPlease give me my Placement Readiness Assessment, Company Matches, Skill Gap Analysis, Campus Resource Routing, and a 3-step Action Plan.`;
 
-    // Add user message to UI
     setMessages((prev) => [...prev, { role: "user", content: userText }]);
-    
-    // Prepare backend history
+
     const nextApiHistory: ApiMsg[] = [{ role: "user", text: backendText }];
     setApiHistory(nextApiHistory);
-    
-    // Send to backend
     await sendToGemini(nextApiHistory);
   };
 
-  // ── Handle Follow-up Chat ───────────────────────────────
   const handleSend = async () => {
     const text = input.trim();
     if (!text || !profileSubmitted || loading) return;
 
     setInput("");
-    
-    // Update UI
     setMessages((prev) => [...prev, { role: "user", content: text }]);
-    
-    // Prepare backend history
+
     const nextApiHistory: ApiMsg[] = [...apiHistory, { role: "user", text }];
     setApiHistory(nextApiHistory);
-    
-    // Send to backend
     await sendToGemini(nextApiHistory);
   };
 
@@ -288,15 +264,17 @@ export default function Chatbot() {
     }
   };
 
-  // ── Render ───────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#0d0d0d] flex flex-col">
-      {/* Page Header */}
-      <div className="px-4 pt-8 pb-4 max-w-4xl mx-auto w-full">
+    // ✅ FIX: Use h-screen + overflow-hidden so the chat fills the full viewport
+    // with no dead space below — the inner scroll is contained to the messages area only
+    <div className="h-screen bg-[#0d0d0d] flex flex-col overflow-hidden">
+
+      {/* Page Header — fixed height, doesn't grow */}
+      <div className="px-4 pt-6 pb-3 max-w-4xl mx-auto w-full flex-shrink-0">
         <p className="text-xs text-amber-500/70 tracking-widest uppercase mb-1">
           AI GUIDANCE
         </p>
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-1">
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
           AI Career Mentor
         </h1>
         <p className="text-sm text-white/50">
@@ -305,11 +283,12 @@ export default function Chatbot() {
         </p>
       </div>
 
-      {/* Chat Container */}
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4">
-        <div className="flex-1 flex flex-col bg-[#110808] border border-amber-900/20 rounded-2xl overflow-hidden">
+      {/* Chat Container — flex-1 fills remaining height exactly */}
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 pb-4 min-h-0">
+        <div className="flex-1 flex flex-col bg-[#110808] border border-amber-900/20 rounded-2xl overflow-hidden min-h-0">
+
           {/* Chat Header */}
-          <div className="flex items-center gap-3 px-4 py-3 border-b border-amber-900/20 bg-[#1a0a0a]">
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-amber-900/20 bg-[#1a0a0a] flex-shrink-0">
             <div className="w-9 h-9 rounded-full bg-amber-500/20 flex items-center justify-center">
               <Bot size={18} className="text-amber-400" />
             </div>
@@ -322,8 +301,9 @@ export default function Chatbot() {
             </div>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1 min-h-[400px] max-h-[60vh]">
+          {/* ✅ FIX: Messages area — flex-1 + min-h-0 + overflow-y-auto
+              This is the ONLY scroll region. No fixed min/max heights. */}
+          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-1">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -334,9 +314,7 @@ export default function Chatbot() {
                 {/* Avatar */}
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    msg.role === "bot"
-                      ? "bg-amber-500/20"
-                      : "bg-amber-600/30"
+                    msg.role === "bot" ? "bg-amber-500/20" : "bg-amber-600/30"
                   }`}
                 >
                   {msg.role === "bot" ? (
@@ -354,16 +332,16 @@ export default function Chatbot() {
                       : "bg-amber-600/20 border border-amber-600/30 rounded-tr-none text-white"
                   }`}
                 >
-                  {/* Bot message with markdown */}
+                  {/* Bot message — markdown rendered */}
                   {msg.role === "bot" && !msg.isForm && (
-                    <div className="prose prose-invert prose-sm max-w-none prose-headings:text-amber-400 prose-headings:font-bold prose-strong:text-white prose-a:text-amber-400">
+                    <div className="prose prose-invert prose-sm max-w-none prose-headings:text-amber-400 prose-headings:font-bold prose-strong:text-amber-300 prose-a:text-amber-400">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {msg.content}
                       </ReactMarkdown>
                     </div>
                   )}
 
-                  {/* First bot message with inline form */}
+                  {/* First message with inline form */}
                   {msg.isForm && (
                     <>
                       <p className="text-sm text-white whitespace-pre-line">
@@ -380,30 +358,28 @@ export default function Chatbot() {
                   {msg.role === "user" && (
                     <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                   )}
-                  
-                  {/* Roadmap link styling */}
+
+                  {/* Roadmap link chip */}
                   {msg.role === "bot" && !msg.isForm && msg.content.includes("roadmap.sh") && (
-                     <a
-                       href={`https://${msg.content.match(/roadmap\.sh\/[a-z-]+/)?.[0] ?? "roadmap.sh"}`}
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className="mt-3 inline-flex items-center gap-1 text-xs bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 px-3 py-1.5 rounded-full transition-all no-underline"
-                     >
-                       Follow Your Roadmap →
-                     </a>
+                    <a
+                      href={`https://${msg.content.match(/roadmap\.sh\/[a-z-]+/)?.[0] ?? "roadmap.sh"}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center gap-1 text-xs bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 px-3 py-1.5 rounded-full transition-all no-underline"
+                    >
+                      Follow Your Roadmap →
+                    </a>
                   )}
                 </div>
               </div>
             ))}
 
-            {/* Typing indicator */}
             {loading && <TypingIndicator />}
-
             <div ref={bottomRef} />
           </div>
 
-          {/* Input Bar */}
-          <div className="px-4 py-3 border-t border-amber-900/20 bg-[#1a0a0a]">
+          {/* Input Bar — fixed at bottom, never scrolls away */}
+          <div className="px-4 py-3 border-t border-amber-900/20 bg-[#1a0a0a] flex-shrink-0">
             {!profileSubmitted ? (
               <p className="text-center text-xs text-white/30 py-1">
                 Fill out your profile above to start the conversation
@@ -431,6 +407,7 @@ export default function Chatbot() {
               </div>
             )}
           </div>
+
         </div>
       </div>
     </div>
