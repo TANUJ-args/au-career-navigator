@@ -109,14 +109,7 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button
-            type="button"
-            aria-label="Toggle theme"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="h-10 w-10 shrink-0 rounded-full border border-[#8B6914] bg-[#1f0f0f] text-gold hover:bg-[#2a1a1a] hover-gold-glow"
-          >
-            {theme === "dark" ? <SunMedium className="w-4 h-4 mx-auto" /> : <MoonStar className="w-4 h-4 mx-auto" />}
-          </button>
+          
         </div>
       </nav>
     </header>
